@@ -1,6 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Icon from "@/components/ui/icon";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const services = [
   {
@@ -21,7 +28,7 @@ const services = [
       "Профессиональная чистка ковров и ковровых покрытий любой сложности",
     icon: "Brush",
     image:
-      "https://cdn.poehali.dev/files/94c98ab0-91f0-4b5d-bd22-1737f222ae6e.png",
+      "https://cdn.poehali.dev/files/38c946d5-9ed6-4dac-956d-cbaef5de8444.png",
   },
   {
     id: 3,
@@ -50,7 +57,7 @@ const services = [
       "Профессиональная чистка обивки стульев различных типов и материалов",
     icon: "Armchair",
     image:
-      "https://images.unsplash.com/photo-1610701596007-11502861dcfa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80",
+      "https://cdn.poehali.dev/files/00eece92-9400-4288-a22d-2c59eec8ba85.png",
   },
   {
     id: 6,
@@ -60,11 +67,13 @@ const services = [
       "Эффективное устранение неприятных запахов с любых поверхностей",
     icon: "Wind",
     image:
-      "https://images.unsplash.com/photo-1611269154421-4e27233ac5c7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80",
+      "https://images.unsplash.com/photo-1616046229478-9901c5536a45?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80",
   },
 ];
 
 const ServicesSection = () => {
+  const [showPhoneDialog, setShowPhoneDialog] = useState(false);
+
   return (
     <section id="services" className="py-16 bg-light-gray">
       <div className="container">
@@ -121,13 +130,52 @@ const ServicesSection = () => {
           </p>
           <Button
             size="lg"
-            onClick={() => (window.location.href = "tel:+79773077071")}
+            onClick={() => {
+              if (/Android|iPhone/i.test(navigator.userAgent)) {
+                window.location.href = "tel:+79773077071";
+              } else {
+                setShowPhoneDialog(true);
+              }
+            }}
           >
             <Icon name="PhoneCall" className="mr-2" size={18} />
             Уточнить стоимость
           </Button>
         </div>
       </div>
+
+      {/* Диалог с телефоном для ПК-версии */}
+      <Dialog open={showPhoneDialog} onOpenChange={setShowPhoneDialog}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="text-xl text-center">
+              Позвоните нам
+            </DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="flex flex-col items-center justify-center">
+              <a
+                href="tel:+79773077071"
+                className="text-2xl font-bold text-primary hover:underline"
+              >
+                +7 (977) 307-70-71
+              </a>
+              <p className="text-muted-foreground mt-2 text-center">
+                Мы работаем ежедневно с 8:00 до 20:00
+              </p>
+              <Button
+                onClick={() =>
+                  window.open("https://wa.me/qr/ZYIUXWAHTFPMK1", "_blank")
+                }
+                className="mt-4 w-full"
+              >
+                <Icon name="MessageSquare" className="mr-2" size={16} />
+                Написать в WhatsApp
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };

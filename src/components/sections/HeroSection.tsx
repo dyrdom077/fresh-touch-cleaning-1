@@ -1,7 +1,16 @@
 import { Button } from "@/components/ui/button";
 import Icon from "@/components/ui/icon";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const HeroSection = () => {
+  const [showPhoneDialog, setShowPhoneDialog] = useState(false);
+
   return (
     <section
       id="home"
@@ -33,7 +42,13 @@ const HeroSection = () => {
                 size="lg"
                 variant="outline"
                 className="text-base font-medium border-primary text-primary hover:bg-primary/10"
-                onClick={() => (window.location.href = "tel:+79773077071")}
+                onClick={() => {
+                  if (/Android|iPhone/i.test(navigator.userAgent)) {
+                    window.location.href = "tel:+79773077071";
+                  } else {
+                    setShowPhoneDialog(true);
+                  }
+                }}
               >
                 <Icon name="PhoneCall" className="mr-2" size={20} />
                 Позвонить нам
@@ -65,7 +80,7 @@ const HeroSection = () => {
           <div className="order-1 lg:order-2 relative">
             <div className="relative z-10">
               <img
-                src="https://cdn.poehali.dev/files/38c946d5-9ed6-4dac-956d-cbaef5de8444.png"
+                src="https://cdn.poehali.dev/files/94c98ab0-91f0-4b5d-bd22-1737f222ae6e.png"
                 alt="Химчистка дивана"
                 className="rounded-lg shadow-xl"
               />
@@ -91,6 +106,39 @@ const HeroSection = () => {
           </div>
         </div>
       </div>
+
+      {/* Диалог с телефоном для ПК-версии */}
+      <Dialog open={showPhoneDialog} onOpenChange={setShowPhoneDialog}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="text-xl text-center">
+              Позвоните нам
+            </DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="flex flex-col items-center justify-center">
+              <a
+                href="tel:+79773077071"
+                className="text-2xl font-bold text-primary hover:underline"
+              >
+                +7 (977) 307-70-71
+              </a>
+              <p className="text-muted-foreground mt-2 text-center">
+                Мы работаем ежедневно с 8:00 до 20:00
+              </p>
+              <Button
+                onClick={() =>
+                  window.open("https://wa.me/qr/ZYIUXWAHTFPMK1", "_blank")
+                }
+                className="mt-4 w-full"
+              >
+                <Icon name="MessageSquare" className="mr-2" size={16} />
+                Написать в WhatsApp
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };

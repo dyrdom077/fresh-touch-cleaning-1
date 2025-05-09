@@ -4,12 +4,20 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import Icon from "@/components/ui/icon";
 import { toast } from "@/components/ui/use-toast";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const ContactSection = () => {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
     message: "",
+    emailService: "mail.ru", // Добавляем выбор почтового сервиса
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -18,6 +26,10 @@ const ContactSection = () => {
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSelectChange = (value: string) => {
+    setFormData((prev) => ({ ...prev, emailService: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -34,7 +46,12 @@ const ContactSection = () => {
         title: "Спасибо за заявку!",
         description: "Мы свяжемся с вами в ближайшее время.",
       });
-      setFormData({ name: "", phone: "", message: "" });
+      setFormData({
+        name: "",
+        phone: "",
+        message: "",
+        emailService: "mail.ru",
+      });
     } catch (error) {
       toast({
         title: "Ошибка отправки",
@@ -101,6 +118,24 @@ const ContactSection = () => {
                   placeholder="Опишите, что нужно почистить..."
                   rows={4}
                 />
+              </div>
+              <div>
+                <label className="block mb-2 font-medium">
+                  Предпочитаемый почтовый сервис
+                </label>
+                <Select
+                  value={formData.emailService}
+                  onValueChange={handleSelectChange}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Выберите почтовый сервис" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="mail.ru">Mail.ru</SelectItem>
+                    <SelectItem value="yandex.ru">Яндекс</SelectItem>
+                    <SelectItem value="gmail.com">Gmail</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <Button type="submit" className="w-full" disabled={isSubmitting}>
                 {isSubmitting ? "Отправка..." : "Отправить заявку"}
