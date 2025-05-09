@@ -1,9 +1,9 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import Icon from "@/components/ui/icon";
+import { toast } from "@/components/ui/use-toast";
 
 const ContactSection = () => {
   const [formData, setFormData] = useState({
@@ -11,27 +11,49 @@ const ContactSection = () => {
     phone: "",
     message: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // В реальном проекте здесь будет код для отправки формы
-    console.log("Form submitted:", formData);
-    alert("Спасибо за заявку! Мы свяжемся с вами в ближайшее время.");
-    setFormData({ name: "", phone: "", message: "" });
+    setIsSubmitting(true);
+
+    try {
+      const subject = encodeURIComponent(`Заявка с сайта от ${formData.name}`);
+      const body = encodeURIComponent(
+        `Имя: ${formData.name}\nТелефон: ${formData.phone}\nСообщение: ${formData.message}`,
+      );
+      window.location.href = `mailto:Allsummers@yandex.ru?subject=${subject}&body=${body}`;
+      toast({
+        title: "Спасибо за заявку!",
+        description: "Мы свяжемся с вами в ближайшее время.",
+      });
+      setFormData({ name: "", phone: "", message: "" });
+    } catch (error) {
+      toast({
+        title: "Ошибка отправки",
+        description:
+          "Пожалуйста, позвоните нам по телефону или напишите на WhatsApp.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <section id="contacts" className="py-16 bg-light-gray">
       <div className="container">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Свяжитесь с нами</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            Свяжитесь с нами
+          </h2>
           <p className="text-dark-gray max-w-2xl mx-auto">
             Оставьте заявку или позвоните нам, и мы ответим на все ваши вопросы
           </p>
@@ -80,9 +102,13 @@ const ContactSection = () => {
                   rows={4}
                 />
               </div>
-              <Button type="submit" className="w-full">
-                Отправить заявку
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? "Отправка..." : "Отправить заявку"}
               </Button>
+              <p className="text-xs text-gray-500 text-center mt-2">
+                Нажимая на кнопку, вы соглашаетесь с обработкой персональных
+                данных
+              </p>
             </form>
           </div>
 
