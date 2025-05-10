@@ -1,3 +1,4 @@
+
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { fileURLToPath } from 'url';
@@ -17,9 +18,18 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 5173,
-    allowedHosts: true,
+    strictPort: true,
     hmr: {
-      overlay: false // Disables the error overlay if you only want console errors
+      // Специальные настройки для работы в среде Poehali
+      clientPort: 443, // Используем HTTPS порт для WebSocket
+      protocol: 'wss', // Используем защищенный WebSocket
+      host: 'preview--fresh-touch-cleaning-1.poehali.dev', // Используем актуальный хост
+      overlay: false // Отключаем оверлей ошибок
+    },
+    // Разрешаем запросы с любых хостов
+    cors: true,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
     }
   },
 });
